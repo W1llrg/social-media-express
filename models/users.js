@@ -31,6 +31,10 @@ Users.init(
 		},
 		picture: {
 			type: DataTypes.STRING,
+		},
+		password: {
+			type: DataTypes.STRING,
+			allowNull: false,
 		}
 	}, {
 		sequelize,

@@ -9,6 +9,6 @@ export const auth = (req, res, next) => {
 		req.user = {...user};
 		next();
 	} else {
-		res.status(401).send({error: 401});
+		res.status(401).send({message: "wrong token!"});
 	}
 }

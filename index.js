@@ -17,8 +17,10 @@ app.use(express.json());
 
 // ROUTES
 import { userRouter } from "./routes/userRouter.js";
+import {articleRouter} from "./routes/articleRouter.js";
 
 app.use("/api/user", userRouter);
+app.use("/api/article", articleRouter);
 
 app.listen(port, () =>
 {

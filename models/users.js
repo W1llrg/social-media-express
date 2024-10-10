@@ -1,5 +1,6 @@
 import {DataTypes, Model} from "sequelize";
 import sequelize from "../config/database.js";
+import Friends from "./friends.js";
 
 class Users extends Model
 {
@@ -36,5 +37,12 @@ Users.init(
 		modelName: 'Users',
 	}
 )
+
+Users.belongsToMany(Users, {
+	through: Friends,
+	as: "UsersFriends",
+	foreignKey: "user_id",
+	otherKey: "friend_id"
+});
 
 export default Users;

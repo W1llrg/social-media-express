@@ -21,3 +21,5 @@ Contents.init(
 		modelName: "Contents",
 	}
 )
+
+export default Contents;

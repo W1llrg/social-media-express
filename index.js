@@ -10,17 +10,6 @@ const port = 3000
 
 const swaggerDocs = yaml.load('./swagger.yaml');
 
-// DB CONFIG
-sequelize
-	.sync({force: true})
-	.then(() => {
-		console.log('Sequelize: Database connection established.');
-		loadFixtures().then(r => console.log(r));
-	})
-	.catch((error) => {
-		console.error('Sequelize: Database connection failed:', error);
-	});
-
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use(cors());

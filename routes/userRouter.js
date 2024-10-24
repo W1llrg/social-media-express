@@ -1,5 +1,6 @@
 import express from 'express';
 import {userConnect, userCreate} from "../services/userService.js";
+import {articleRouter} from "./articleRouter.js";
 
 export const userRouter = express.Router();
 
@@ -31,4 +32,14 @@ userRouter.post("/register", async (req, res) =>
 	} else {
 		res.status(400).send({error: 400});
 	}
+});
+
+userRouter.get("/friends/getAll", async (req, res) =>
+{
+
+});
+
+userRouter.get("/friends/get", async (req, res) =>
+{
+
 });

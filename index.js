@@ -16,13 +16,17 @@ app.use(cors());
 app.use(express.json());
 
 // ROUTES
-import { userRouter } from "./routes/userRouter.js";
+import {userRouter} from "./routes/userRouter.js";
 import {articleRouter} from "./routes/articleRouter.js";
+import {commentRouter} from "./routes/commentRouter.js";
+import {contentRouter} from "./routes/contentRouter.js";
 
 app.use("/api/user", userRouter);
 app.use("/api/article", articleRouter);
+app.use("/api/comment", commentRouter);
+app.use("/api/content", contentRouter);
 
 app.listen(port, () =>
 {
-	console.log(`Example app listening on port ${port}`)
+	console.log(`App listening on port ${port}`)
 })

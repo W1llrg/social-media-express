@@ -24,10 +24,12 @@ Users.init(
 		surname: {
 			type: DataTypes.STRING,
 			allowNull: false,
+			unique: true
 		},
 		email: {
 			type: DataTypes.STRING,
 			allowNull: false,
+			unique: true
 		},
 		picture: {
 			type: DataTypes.STRING,

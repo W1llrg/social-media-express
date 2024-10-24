@@ -1,6 +1,5 @@
 import express from 'express';
-import {userConnect, userCreate} from "../services/userService.js";
-import {articleRouter} from "./articleRouter.js";
+import {userAddFriend, userConnect, userCreate, userGetAll, userGetAllFriends} from "../services/userService.js";
 import {MyHttpError} from "../utils/errorBuilders.js";
 
 export const userRouter = express.Router();
@@ -40,28 +39,43 @@ userRouter.post("/register", async (req, res, next) =>
 	}
 });
 
-userRouter.get("/friends/getAll", async (req, res) =>
+userRouter.get("/friends/getAll", async (req, res, next) =>
 {
-	const users = await userGetAllFriends();
+	if (req.body.username) {
+		try {
+			const users = await userGetAllFriends(req.body.username);
 
-	if (!users) {
-		res.status(400).send({message: "Impossible de récupérer les utilisateurs"});
+			res.status(200).json({users});
+		} catch (e) {
+			next(new MyHttpError(500, "Impossible de récupérer les amis de l'utilisateur " + req.body.surname));
+		}
 	} else {
-		res.status(200).json({users});
+		next(new MyHttpError(400, "Requête mal formulée (nom d'utilisateur requis)"));
 	}
 });
 
-userRouter.get("/friends/get", async (req, res) =>
+userRouter.post("/friends/add", async (req, res, next) =>
 {
-	if (req.body.surname) {
-		const userFriends = await userGetFriend();
+	if (req.body.username && req.body.friendUsername) {
+		try {
+			const relation = await userAddFriend(req.body.username, req.body.friendUsername);
 
-		if (!userFriends) {
-			// TODO
-		} else {
-			res.status(200).json({userFriends});
+			res.status(200).json({message: "Relation créée"});
+		} catch (error) {
+			next(new MyHttpError(500, "Impossible de créer la relation"));
 		}
 	} else {
-		res.status(400).send({message: "Requête invalide"});
+		next(new MyHttpError(400, "Requête mal formulée (noms d'utilisateur requis)"));
+	}
+});
+
+userRouter.get("/", async (req, res, next) =>
+{
+	try {
+		const users = await userGetAll();
+
+		res.status(200).json({users});
+	} catch (e) {
+		next(new MyHttpError(500, "Erreur lors de l'exécution"))
 	}
 });

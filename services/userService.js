@@ -113,3 +113,43 @@ export const userGetAll = async () =>
 
 	return users;
 }
+
+export const userGetById = async (userId) =>
+{
+	const user = await Users.findOne({
+		where: {user_id: userId}
+	});
+	if (!user) {
+		throw new MyError(US_CODE + 500, "Impossible de récupérer l'utilisateur");
+	}
+
+	return user;
+
+}
+
+export const userGetByUsername = async (username) =>
+{
+	const user = await Users.findOne({
+		where: {surname: username}
+	});
+	if (!user) {
+		throw new MyError(US_CODE + 600, "Impossible de récupérer l'utilisateur");
+	}
+
+	return user;
+}
+
+export const userUpdatePassword = async (userId, newPasswd) =>
+{
+	try {
+		const hashPass = await bcrypt.hash(newPasswd, SALT_ROUNDS);
+		await Users.update(
+			{password: hashPass},
+			{
+				where: {user_id: userId}
+			}
+		);
+	} catch (e) {
+		throw new MyError(US_CODE + 700, "Impossible de mettre à jour le mot de passe")
+	}
+}

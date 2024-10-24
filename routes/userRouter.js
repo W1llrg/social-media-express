@@ -1,5 +1,12 @@
 import express from 'express';
-import {userAddFriend, userConnect, userCreate, userGetAll, userGetAllFriends} from "../services/userService.js";
+import {
+	userAddFriend,
+	userConnect,
+	userCreate,
+	userGetAll,
+	userGetAllFriends,
+	userUpdatePassword
+} from "../services/userService.js";
 import {MyHttpError} from "../utils/errorBuilders.js";
 
 export const userRouter = express.Router();
@@ -66,6 +73,21 @@ userRouter.post("/friends/add", async (req, res, next) =>
 		}
 	} else {
 		next(new MyHttpError(400, "Requête mal formulée (noms d'utilisateur requis)"));
+	}
+});
+
+userRouter.post("/updatePassword", async (req, res, next) =>
+{
+	if (req.body.password && req.body.userId) {
+		try {
+			const user = await userUpdatePassword(req.body.userId, req.body.password);
+
+			res.status(200).json({message: "Mot de passe mis à jour"});
+		} catch (error) {
+			next(new MyHttpError(500, "Impossible de changer le mot de passe: " + error));
+		}
+	} else {
+		next(new MyHttpError(400, "Requête mal formulée (ID utilisateur et nouveau MDP requis)"));
 	}
 });
 

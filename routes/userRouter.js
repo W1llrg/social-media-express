@@ -25,7 +25,7 @@ userRouter.post("/register", async (req, res) =>
 			req.body.password
 		);
 		if (!user) {
-			res.status(401).send({message: "resultat invalide"});
+			res.status(401).send({message: "résultat invalide"});
 		} else {
 			res.status(201).json({message: `creation user: ${req.body.email}`});
 		}
@@ -36,10 +36,26 @@ userRouter.post("/register", async (req, res) =>
 
 userRouter.get("/friends/getAll", async (req, res) =>
 {
+	const users = await userGetAllFriends();
 
+	if (!users) {
+		res.status(400).send({message: "Impossible de récupérer les utilisateurs"});
+	} else {
+		res.status(200).json({users});
+	}
 });
 
 userRouter.get("/friends/get", async (req, res) =>
 {
+	if (req.body.surname) {
+		const userFriends = await userGetFriend();
 
+		if (!userFriends) {
+			// TODO
+		} else {
+			res.status(200).json({userFriends});
+		}
+	} else {
+		res.status(400).send({message: "Requête invalide"});
+	}
 });

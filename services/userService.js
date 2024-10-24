@@ -1,7 +1,6 @@
 import Users from "../models/users.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import res from "express/lib/response.js";
 import {MyError} from "../utils/errorBuilders.js";
 import Friends from "../models/friends.js";
 

@@ -1,6 +1,5 @@
 import Articles from "../models/articles.js";
 import {MyError} from "../utils/errorBuilders.js";
-import {userGetById} from "./userService.js";
 
 const AS_CODE = 2000;
 

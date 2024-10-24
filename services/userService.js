@@ -2,9 +2,12 @@ import Users from "../models/users.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import res from "express/lib/response.js";
+import {MyError} from "../utils/errorBuilders.js";
 
 const SALT_ROUNDS = 10;
 const JWT_SECRET = "abCDeFgHIjkLMnOpQrstuVwXYZ";
+
+const US_CODE = 1000;
 
 export const userConnect = async (email, passwd) =>
 {
@@ -12,11 +15,16 @@ export const userConnect = async (email, passwd) =>
 		where: {email: email}
 	});
 
+	if (!user) {
+		throw new MyError(US_CODE, "Adresse email invalide");
+	}
+
 	const match = bcrypt.compare(passwd, user.password);
+
 	if (match) {
 		return jwt.sign({...user}, JWT_SECRET);
 	} else {
-		return false;
+		throw new MyError(US_CODE + 10, "Mot de passe erroné");
 	}
 }
 
@@ -36,7 +44,6 @@ export const userCreate = async (firstName, lastName, surname, email, passwd) =>
 
 		return true;
 	} catch (error) {
-
-		return false;
+		throw new MyError(US_CODE + 100, "Création utilisateur échouée: " + error);
 	}
 }

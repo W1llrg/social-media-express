@@ -1,36 +1,42 @@
 import express from 'express';
 import {userConnect, userCreate} from "../services/userService.js";
 import {articleRouter} from "./articleRouter.js";
+import {MyHttpError} from "../utils/errorBuilders.js";
 
 export const userRouter = express.Router();
 
-userRouter.post("/login", async (req, res) =>
+userRouter.post("/login", async (req, res, next) =>
 {
 	if (req.body.email && req.body.password) {
-		const token = await userConnect(req.body.email, req.body.password);
-		res.status(200).json({token});
+		try {
+			const token = await userConnect(req.body.email, req.body.password);
+			res.status(200).json({token});
+		} catch (e) {
+			next(new MyHttpError(401, "Identifiants incorrects"));
+		}
 	} else {
-		res.status(401).send({message: "identifiants invalides"});
+		next(MyHttpError(400, "Requête mal formulée (email et mot de passe requis)"));
 	}
 });
 
-userRouter.post("/register", async (req, res) =>
+userRouter.post("/register", async (req, res, next) =>
 {
 	if (req.body.email && req.body.password) {
-		const user = await userCreate(
-			req.body.firstName,
-			req.body.lastName,
-			req.body.surname,
-			req.body.email,
-			req.body.password
-		);
-		if (!user) {
-			res.status(401).send({message: "résultat invalide"});
-		} else {
-			res.status(201).json({message: `creation user: ${req.body.email}`});
+		try {
+			const user = await userCreate(
+				req.body.firstName,
+				req.body.lastName,
+				req.body.surname,
+				req.body.email,
+				req.body.password
+			);
+
+			res.status(201).json({message: `Nouvel utilisateur: ${req.body.email}`});
+		} catch (e) {
+			next(new MyHttpError(400, "Requête mal formulée"));
 		}
 	} else {
-		res.status(400).send({error: 400});
+		next(new MyHttpError(400, "Requête mal formulée (email et mot de passe requis)"));
 	}
 });
 

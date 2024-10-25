@@ -46,11 +46,13 @@ userRouter.post("/register", async (req, res, next) =>
 	}
 });
 
-userRouter.get("/friends/getAll", async (req, res, next) =>
+userRouter.get("/friends/getAll/:username", async (req, res, next) =>
 {
-	if (req.body.username) {
+	const username = req.params.username;
+
+	if (username) {
 		try {
-			const users = await userGetAllFriends(req.body.username);
+			const users = await userGetAllFriends(username);
 
 			res.status(200).json({users});
 		} catch (e) {

@@ -21,10 +21,13 @@ contentRouter.get("/", async (req, res, next) => {
 	}
 });
 
-contentRouter.get("/getAllByUser", async (req, res, next) => {
-	if (req.body.userId) {
+contentRouter.get("/getAllByUser/:id", async (req, res, next) => {
+	const userId = req.params.id;
+
+	if (userId) {
 		try {
-			const contents = await contentGetAllByUser(req.body.userId);
+			const contents = await contentGetAllByUser(userId);
+
 			res.status(200).json({ contents });
 		} catch (e) {
 			next(new MyHttpError(500, "Impossible de récupérer les contenus de l'utilisateur"));

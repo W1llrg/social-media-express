@@ -12,6 +12,7 @@ export class WebsocketServer extends Server
 			}
 		);
 		this.init();
+		console.log(`Websocket server listening on port ${port}`);
 	}
 
 	init()

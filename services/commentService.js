@@ -1,5 +1,7 @@
 import Comments from "../models/comments.js";
 import {MyError} from "../utils/errorBuilders.js";
+import {userGetAllFriends} from "./userService.js";
+import {articleGetAllByUser} from "./articleService.js";
 
 const CS_CODE = 3000;
 
@@ -23,6 +25,28 @@ export const commentGetAllByUser = async (userId) =>
 	}
 
 	return comments;
+}
+
+export const commentGetAllByUserFriend = async (userId) =>
+{
+	let friends;
+	try {
+		friends = await userGetAllFriends(userId);
+	} catch (e) {
+		console.error(e);
+	}
+
+	try {
+		let comments = [];
+		for (let i = 0; i < friends.length; i++) {
+			const friendComments = articleGetAllByUser(friends[i].user_id);
+			comments = comments.concat(comments);
+		}
+
+		return comments;
+	} catch (e) {
+		throw new MyError(CS_CODE + 400, "Impossible de récupérer tous les comments");
+	}
 }
 
 export const commentGetById = async (commentId) =>

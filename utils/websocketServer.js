@@ -54,6 +54,8 @@ class WebsocketServer
 			console.log(`new room opened: ${room}`);
 		});
 
+		console.log("new room created: ", room);
+
 		return room;
 	}
 }

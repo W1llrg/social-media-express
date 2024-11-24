@@ -40,16 +40,16 @@ export const roomGetById = async (roomId) =>
 
 export const roomGetByUserCombo = async (userId, friendId) =>
 {
-	const room = await Rooms.findOne({
+	let room = await Rooms.findOne({
 		where: {
 			user_id: userId,
 			friend_id: friendId
 		}
 	});
-	if (!room) {
-		throw new MyError(RM_CODE + 700, "Impossible de récupérer la room");
-	}
 
+	if (!room) {
+		room = false;
+	}
 	return room;
 }
 
@@ -73,9 +73,11 @@ export const roomFindOrCreate = async (userId, friendId) =>
 			room_name: roomName
 		});
 
+		console.log(room);
+
 		return roomName;
 	} catch (e) {
-		throw new MyError(RM_CODE + 410, "Impossible de créer la room");
+		throw new MyError(RM_CODE + 410, "Impossible de créer la room: " + e);
 	}
 }
 
@@ -97,6 +99,7 @@ export const roomDelete = async (userId, friendId) =>
 
 export const roomDeleteById = async (roomId) =>
 {
+	// TODO - get room name
 	try {
 		const room = await Rooms.destroy({
 			where: {
@@ -104,6 +107,7 @@ export const roomDeleteById = async (roomId) =>
 			}
 		});
 
+		// const roomName = websocketServer.closeRoom(roomName);
 		return true;
 	} catch (e) {
 		throw new MyError(RM_CODE + 600, "Impossible de supprimer la room`")

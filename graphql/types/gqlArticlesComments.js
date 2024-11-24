@@ -51,4 +51,4 @@ export const rootQuery = new GraphQLObjectType({
 			}
 		}
 	})
-})
+});

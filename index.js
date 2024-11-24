@@ -6,6 +6,7 @@ import yaml from 'yamljs';
 import cors from 'cors';
 import {midError} from "./middleware/midError.js";
 import {GraphQLSchema} from "graphql/type/index.js";
+import { graphqlHTTP } from 'express-graphql'
 
 const app = express()
 const port = 3000

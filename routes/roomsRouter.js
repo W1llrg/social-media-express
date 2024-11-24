@@ -50,7 +50,7 @@ roomRouter.get("/get/:id", async (req, res, next) => {
 });
 
 roomRouter.post("/findOrCreate", async (req, res, next) => {
-	if (req.body.userId && req.body.friendId && req.body.roomName) {
+	if (req.body.userId && req.body.friendId) {
 		try {
 			const room = await roomFindOrCreate(
 				req.body.userId,
@@ -61,10 +61,11 @@ roomRouter.post("/findOrCreate", async (req, res, next) => {
 				room: room
 			});
 		} catch (e) {
+			console.log("got error:", e);
 			next(new MyHttpError(500, "Impossible de créer la room"));
 		}
 	} else {
-		next(new MyHttpError(400, "Requête mal formulée (ID utilisateur, ID ami et nom de la room requis)"));
+		next(new MyHttpError(400, "Requête mal formulée (ID utilisateur, ID ami requis)"));
 	}
 });
 

@@ -58,7 +58,9 @@ export const roomFindOrCreate = async (userId, friendId) =>
 	try {
 		const room = await roomGetByUserCombo(userId, friendId);
 
-		return room.room_name;
+		if (room) {
+			return room.room_name;
+		}
 	} catch (e) {
 		console.error(e);
 	}

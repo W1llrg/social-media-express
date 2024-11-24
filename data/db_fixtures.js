@@ -3,6 +3,8 @@ import Articles from "../models/articles.js";
 import Comments from "../models/comments.js";
 import Contents from "../models/contents.js";
 import Friends from "../models/friends.js";
+import Rooms from "../models/rooms.js";
+import Chats from "../models/chats.js";
 import SubscribedTo from "../models/subscribedTo.js";
 
 async function loadFixtures()

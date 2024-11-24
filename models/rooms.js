@@ -10,15 +10,16 @@ Rooms.init(
 	{
 		room_id: {
 			type: DataTypes.INTEGER,
-			primaryKey: true
+			primaryKey: true,
+			autoIncrement: true
 		},
 		user_id: {
 			type: DataTypes.INTEGER,
-			primaryKey: true
+			allowNull: false
 		},
 		friend_id: {
 			type: DataTypes.INTEGER,
-			primaryKey: true
+			allowNull: false
 		},
 		room_name: {
 			type: DataTypes.STRING,

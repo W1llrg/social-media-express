@@ -1,14 +1,15 @@
 openapi: 3.0.0
 info:
-  title: Social Media Express API
+  title: Content Management API
   version: 1.0.0
-  description: Projet Web-API M1 DFS
+  description: API for managing articles, chats, comments, content, rooms, and users
 
 components:
   securitySchemes:
-    BearerAuth:
+    bearerAuth:
       type: http
       scheme: bearer
+
   schemas:
     Error:
       type: object
@@ -17,325 +18,7 @@ components:
           type: string
 
 paths:
-  /api/article:
-    get:
-      summary: Get all articles
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: List of all articles
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  articles:
-                    type: array
-                    items:
-                      type: object
-        '500':
-          description: Execution error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /api/article/getAllByContent/{id}:
-    get:
-      summary: Get articles by content ID
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: List of articles for the specified content
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  list:
-                    type: array
-                    items:
-                      type: object
-        '400':
-          description: Bad request - contentId required
-        '500':
-          description: Server error
-
-  /api/article/getAllByUser/{id}:
-    get:
-      summary: Get articles by user ID
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: List of articles for the specified user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  articles:
-                    type: array
-                    items:
-                      type: object
-        '400':
-          description: Bad request
-        '500':
-          description: Server error
-
-  /api/article/get/{id}:
-    get:
-      summary: Get article by ID
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Article details
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  article:
-                    type: object
-        '400':
-          description: Bad request
-        '500':
-          description: Server error
-
-  /api/article/create:
-    post:
-      summary: Create a new article
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - title
-                - content
-                - userId
-                - contentId
-              properties:
-                title:
-                  type: string
-                content:
-                  type: string
-                userId:
-                  type: string
-                contentId:
-                  type: string
-      responses:
-        '200':
-          description: Article created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        '400':
-          description: Bad request - missing required fields
-        '500':
-          description: Server error
-
-  /api/comment:
-    get:
-      summary: Get all comments
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: List of all comments
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  comments:
-                    type: array
-                    items:
-                      type: object
-        '500':
-          description: Server error
-
-  /api/comment/getAllByUser/{id}:
-    get:
-      summary: Get comments by user ID
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: List of comments for the specified user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  comments:
-                    type: array
-                    items:
-                      type: object
-        '400':
-          description: Bad request - user ID required
-        '500':
-          description: Server error
-
-  /api/comment/create:
-    post:
-      summary: Create a new comment
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - content
-                - userId
-                - articleId
-              properties:
-                content:
-                  type: string
-                userId:
-                  type: string
-                articleId:
-                  type: string
-      responses:
-        '201':
-          description: Comment created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        '400':
-          description: Bad request - missing required fields
-        '500':
-          description: Server error
-
-  /api/content:
-    get:
-      summary: Get all contents
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: List of all contents
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  contents:
-                    type: array
-                    items:
-                      type: object
-        '500':
-          description: Server error
-
-  /api/content/getAllByUser:
-    get:
-      summary: Get contents by user ID
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - userId
-              properties:
-                userId:
-                  type: string
-      responses:
-        '200':
-          description: List of contents for the specified user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  contents:
-                    type: array
-                    items:
-                      type: object
-        '400':
-          description: Bad request - user ID required
-        '500':
-          description: Server error
-
-  /api/content/create:
-    post:
-      summary: Create new content
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - title
-                - userId
-              properties:
-                title:
-                  type: string
-                userId:
-                  type: string
-      responses:
-        '201':
-          description: Content created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        '400':
-          description: Bad request - missing required fields
-        '500':
-          description: Server error
-
-  /api/user/login:
+  /users/login:
     post:
       summary: User login
       requestBody:
@@ -363,12 +46,12 @@ paths:
                 properties:
                   token:
                     type: string
-        '400':
-          description: Bad request - missing credentials
         '401':
           description: Invalid credentials
+        '400':
+          description: Bad request
 
-  /api/user/register:
+  /users/register:
     post:
       summary: Register new user
       requestBody:
@@ -394,7 +77,7 @@ paths:
                   type: string
       responses:
         '201':
-          description: User registered successfully
+          description: User created successfully
           content:
             application/json:
               schema:
@@ -403,22 +86,19 @@ paths:
                   message:
                     type: string
         '400':
-          description: Bad request - missing required fields
+          description: Bad request
 
-  /api/user/friends/getAll:
+  /users/friends/getAll/{username}:
     get:
-      summary: Get user's friends
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - username
-              properties:
-                username:
-                  type: string
+      security:
+        - bearerAuth: []
+      summary: Get all friends for a user
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: List of user's friends
@@ -432,13 +112,15 @@ paths:
                     items:
                       type: object
         '400':
-          description: Bad request - username required
+          description: Bad request
         '500':
           description: Server error
 
-  /api/user/friends/add:
+  /users/friends/add:
     post:
-      summary: Add friend
+      security:
+        - bearerAuth: []
+      summary: Add a friend
       requestBody:
         required: true
         content:
@@ -464,12 +146,14 @@ paths:
                   message:
                     type: string
         '400':
-          description: Bad request - usernames required
+          description: Bad request
         '500':
           description: Server error
 
-  /api/user/updatePassword:
+  /users/updatePassword:
     post:
+      security:
+        - bearerAuth: []
       summary: Update user password
       requestBody:
         required: true
@@ -496,6 +180,484 @@ paths:
                   message:
                     type: string
         '400':
-          description: Bad request - missing required fields
+          description: Bad request
+        '500':
+          description: Server error
+
+  /users:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get all users
+      responses:
+        '200':
+          description: List of all users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+        '500':
+          description: Server error
+
+  # Previous routes remain unchanged...
+  /articles:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get all articles
+      responses:
+        '200':
+          description: List of all articles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  articles:
+                    type: array
+                    items:
+                      type: object
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /articles/getAllByContent/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get articles by content ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of articles for the specified content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  list:
+                    type: array
+                    items:
+                      type: object
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /articles/getAllByUser/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get articles by user ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of articles for the specified user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  articles:
+                    type: array
+                    items:
+                      type: object
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /articles/get/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get article by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Article details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  article:
+                    type: object
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /articles/create:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Create a new article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - content
+                - userId
+                - contentId
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                userId:
+                  type: string
+                contentId:
+                  type: string
+      responses:
+        '200':
+          description: Article created successfully
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /chats:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get all chats
+      responses:
+        '200':
+          description: List of all chats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chats:
+                    type: array
+                    items:
+                      type: object
+        '500':
+          description: Server error
+
+  /chats/getByUser:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get chats by user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+              properties:
+                userId:
+                  type: string
+      responses:
+        '200':
+          description: List of user's chats
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /chats/getByRoom/{roomId}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get chats by room
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of room's chats
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /chats/create:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Create a new chat message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - roomId
+                - content
+              properties:
+                userId:
+                  type: string
+                roomId:
+                  type: string
+                content:
+                  type: string
+      responses:
+        '201':
+          description: Chat message created successfully
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /comments:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get all comments
+      responses:
+        '200':
+          description: List of all comments
+        '500':
+          description: Server error
+
+  /comments/getAllByUser/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get comments by user ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of user's comments
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /comments/create:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Create a new comment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - content
+                - userId
+                - articleId
+              properties:
+                content:
+                  type: string
+                userId:
+                  type: string
+                articleId:
+                  type: string
+      responses:
+        '201':
+          description: Comment created successfully
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /contents:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get all contents
+      responses:
+        '200':
+          description: List of all contents
+        '500':
+          description: Server error
+
+  /contents/getAllByUser/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get contents by user ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of user's contents
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /contents/create:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Create new content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - userId
+              properties:
+                title:
+                  type: string
+                userId:
+                  type: string
+      responses:
+        '201':
+          description: Content created successfully
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /rooms:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get all rooms
+      responses:
+        '200':
+          description: List of all rooms
+        '500':
+          description: Server error
+
+  /rooms/getByUser:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get rooms by user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+              properties:
+                userId:
+                  type: string
+      responses:
+        '200':
+          description: List of user's rooms
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /rooms/findOrCreate:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Find or create a room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - friendId
+              properties:
+                userId:
+                  type: string
+                friendId:
+                  type: string
+      responses:
+        '201':
+          description: Room found or created successfully
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /rooms/delete:
+    delete:
+      security:
+        - bearerAuth: []
+      summary: Delete a room by user and friend IDs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - friendId
+              properties:
+                userId:
+                  type: string
+                friendId:
+                  type: string
+      responses:
+        '200':
+          description: Room deleted successfully
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /rooms/delete/{id}:
+    delete:
+      security:
+        - bearerAuth: []
+      summary: Delete a room by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Room deleted successfully
+        '400':
+          description: Bad request
         '500':
           description: Server error

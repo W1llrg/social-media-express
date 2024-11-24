@@ -1,5 +1,6 @@
 import Rooms from "../models/rooms.js";
 import {MyError} from "../utils/errorBuilders.js";
+import {websocketServer} from "../utils/websocketServer.js";
 
 const RM_CODE = 5000;
 
@@ -37,18 +38,42 @@ export const roomGetById = async (roomId) =>
 	return room;
 }
 
-export const roomCreate = async (userId, friendId, roomName) =>
+export const roomGetByUserCombo = async (userId, friendId) =>
+{
+	const room = await Rooms.findOne({
+		where: {
+			user_id: userId,
+			friend_id: friendId
+		}
+	});
+	if (!room) {
+		throw new MyError(RM_CODE + 700, "Impossible de récupérer la room");
+	}
+
+	return room;
+}
+
+export const roomFindOrCreate = async (userId, friendId) =>
 {
 	try {
+		const room = await roomGetByUserCombo(userId, friendId);
+
+		return room.room_name;
+	} catch (e) {
+		console.error(e);
+	}
+
+	try {
+		const roomName = websocketServer.openRoom();
 		const room = await Rooms.create({
 			user_id: userId,
 			friend_id: friendId,
 			room_name: roomName
 		});
 
-		return true;
+		return roomName;
 	} catch (e) {
-		throw new MyError(RM_CODE + 400, "Impossible de créer la room");
+		throw new MyError(RM_CODE + 410, "Impossible de créer la room");
 	}
 }
 

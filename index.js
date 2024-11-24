@@ -22,15 +22,12 @@ import {userRouter} from "./routes/userRouter.js";
 import {articleRouter} from "./routes/articleRouter.js";
 import {commentRouter} from "./routes/commentRouter.js";
 import {contentRouter} from "./routes/contentRouter.js";
-import {WebsocketServer} from "./utils/websocketServer.js";
+import {websocketServer} from "./utils/websocketServer.js";
 
 app.use("/api/user", userRouter);
 app.use("/api/article", articleRouter);
 app.use("/api/comment", commentRouter);
 app.use("/api/content", contentRouter);
-
-// WEBSOCKET
-const wss = new WebsocketServer(2999);
 
 app.listen(port, () =>
 {

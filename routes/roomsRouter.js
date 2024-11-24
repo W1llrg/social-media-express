@@ -4,7 +4,7 @@ import {
 	roomGetAll,
 	roomGetByUser,
 	roomGetById,
-	roomCreate,
+	roomFindOrCreate,
 	roomDelete,
 	roomDeleteById
 } from "../services/roomService.js";
@@ -52,7 +52,7 @@ roomRouter.get("/get/:id", async (req, res, next) => {
 roomRouter.post("/create", async (req, res, next) => {
 	if (req.body.userId && req.body.friendId && req.body.roomName) {
 		try {
-			await roomCreate(
+			await roomFindOrCreate(
 				req.body.userId,
 				req.body.friendId,
 				req.body.roomName

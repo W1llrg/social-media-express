@@ -1,24 +1,31 @@
 import {Server} from 'socket.io';
 
-export class WebsocketServer extends Server
+class WebsocketServer
 {
-	let
 	rooms = ["default"];
+	instance = null;
+	io = null;
 
 	constructor(port)
 	{
-		super(port, {
-				cors: {origin: '*'}
-			}
-		);
+		if (WebsocketServer.instance) {
+			return WebsocketServer.instance;
+		}
+
+		this.io = new Server(port, {
+			cors: { origin: '*' }
+		});
+
 		this.init();
 		console.log(`Websocket server listening on port ${port}`);
+
+		WebsocketServer.instance = this;
 	}
 
 	init()
 	{
 		for (let room of this.rooms) {
-			this.of(room).on("connection", (socket) => {
+			this.io.of(room).on("connection", (socket) => {
 				this.messageHandler(socket, room);
 
 				console.log(`new room opened: ${room}`);
@@ -41,10 +48,14 @@ export class WebsocketServer extends Server
 		const room = `room-${this.rooms.length + 1}`;
 		this.rooms.push(room);
 
-		this.of(room).on("connection", (socket) => {
+		this.io.of(room).on("connection", (socket) => {
 			this.messageHandler(socket, room);
 
 			console.log(`new room opened: ${room}`);
 		});
+
+		return room;
 	}
 }
+
+export const websocketServer = new WebsocketServer(2999);

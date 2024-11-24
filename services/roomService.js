@@ -3,11 +3,9 @@ import {MyError} from "../utils/errorBuilders.js";
 
 const RM_CODE = 5000;
 
-export const roomGetAll = async (contentId) =>
+export const roomGetAll = async () =>
 {
-	const rooms = await Rooms.findAll({
-		where: {part_of: contentId}
-	});
+	const rooms = await Rooms.findAll({});
 	if (!rooms) {
 		throw new MyError(RM_CODE, "Impossible de récupérer les rooms");
 	}
@@ -17,45 +15,70 @@ export const roomGetAll = async (contentId) =>
 
 export const roomGetByUser = async (userId) =>
 {
-	const articles = await Rooms.findAll({
-		where: {posted_by: userId}
+	const room = await Rooms.findAll({
+		where: {user_id: userId}
 	});
-	if (!articles) {
-		throw new MyError(RM_CODE + 100, "Impossible de récupérer les articles");
+	if (!room) {
+		throw new MyError(RM_CODE + 100, "Impossible de récupérer la room");
 	}
 
-	return articles;
+	return room;
 }
 
-export const roomGetById = async (articleId) =>
+export const roomGetById = async (roomId) =>
 {
-	const article = await Rooms.findOne({
-		where: {article_id: articleId}
+	const room = await Rooms.findOne({
+		where: {room_id: roomId}
 	});
-	if (!article) {
-		throw new MyError(RM_CODE + 200, "Impossible de récupérer l'article, ID: " + articleId);
+	if (!room) {
+		throw new MyError(RM_CODE + 200, "Impossible de récupérer la room, ID: " + roomId);
 	}
 
-	return article;
+	return room;
 }
 
-export const roomCreate = async (title, content, userId, contentId) =>
+export const roomCreate = async (userId, friendId, roomName) =>
 {
 	try {
-		const article = await Rooms.create({
-			title: title,
-			content: content,
-			posted_by: userId,
-			part_of: contentId
+		const room = await Rooms.create({
+			user_id: userId,
+			friend_id: friendId,
+			room_name: roomName
 		});
 
 		return true;
 	} catch (e) {
-		throw new MyError(RM_CODE + 400, "Impossible de créer l'article");
+		throw new MyError(RM_CODE + 400, "Impossible de créer la room");
 	}
 }
 
-export const roomDelete = async (userIdA, userIdB) =>
+export const roomDelete = async (userId, friendId) =>
 {
-	// TODO
+	try {
+		const room = await Rooms.destroy({
+			where: {
+				user_id: userId,
+				friend_id: friendId
+			}
+		});
+
+		return true;
+	} catch (e) {
+		throw new MyError(RM_CODE + 500, "Impossible de supprimer la room`")
+	}
+}
+
+export const roomDeleteById = async (roomId) =>
+{
+	try {
+		const room = await Rooms.destroy({
+			where: {
+				room_id: roomId
+			}
+		});
+
+		return true;
+	} catch (e) {
+		throw new MyError(RM_CODE + 600, "Impossible de supprimer la room`")
+	}
 }

@@ -1,90 +1,93 @@
 import express from "express";
-import {} from "../services/roomService.js";
-import {auth} from "../middleware/midAuth.js";
-import {MyHttpError} from "../utils/errorBuilders.js";
+import { auth } from "../middleware/midAuth.js";
+import {
+	roomGetAll,
+	roomGetByUser,
+	roomGetById,
+	roomCreate,
+	roomDelete,
+	roomDeleteById
+} from "../services/roomService.js";
+import { MyHttpError } from "../utils/errorBuilders.js";
 
-export const articleRouter = express.Router();
+export const roomRouter = express.Router();
 
-articleRouter.use(auth);
+roomRouter.use(auth);
 
-articleRouter.get("/getAllByContent/:id", async (req, res, next) =>
-{
-	const contentId = req.params.id;
-
-	if (contentId) {
-		try {
-			const list = await articleGetAllByContent(contentId);
-
-			res.status(200).json({list});
-		} catch (e) {
-			next(new MyHttpError(500, "Impossible de récupérer les articles"));
-		}
-	} else {
-		next(new MyHttpError(400, "Requête mal formulée (contentId requis)"));
-	}
-});
-
-articleRouter.get("/getAllByUser/:id", async (req, res, next) =>
-{
-	const userId = req.params.id;
-
-	if (userId) {
-		try {
-			const articles = await articleGetAllByUser(userId);
-
-			res.status(200).json({articles});
-		} catch (e) {
-			next(new MyHttpError(500, "Impossible de récupérer les articles"));
-		}
-	} else {
-		next(new MyHttpError(400, "Requête mal formulée"));
-	}
-});
-
-articleRouter.get("/get/:id", async (req, res, next) =>
-{
-	const param = req.params.id;
-
-	if (param) {
-		try {
-			const article = await articleGetById(param);
-
-			res.status(200).json({article});
-		} catch (e) {
-			next(new MyHttpError(500, "Impossible de récupérer cet article"));
-		}
-	} else {
-		next(new MyHttpError(400, "Requête mal formulée"));
-	}
-});
-
-articleRouter.post("/create", async (req, res, next) =>
-{
-	if (req.body.userId && req.body.contentId) {
-		try {
-			const article = await articleCreate(
-				req.body.title,
-				req.body.content,
-				req.body.userId,
-				req.body.contentId
-			);
-
-			res.status(200).json({message: "article créé"});
-		} catch (error) {
-			next(new MyHttpError(500, "Impossible de créer l'article"));
-		}
-	} else {
-		next(new MyHttpError(400, "Requête mal formulée (titre, contenu, utilisateur requis)"));
-	}
-});
-
-articleRouter.get("/", async (req, res, next) =>
-{
+roomRouter.get("/", async (req, res, next) => {
 	try {
-		const articles = await articleGetAll();
-
-		res.status(200).json({articles});
+		const rooms = await roomGetAll();
+		res.status(200).json({ rooms });
 	} catch (e) {
-		next(new MyHttpError(500, "Erreur lors de l'exécution"))
+		next(new MyHttpError(500, "Impossible de récupérer les rooms"));
+	}
+});
+
+roomRouter.get("/getByUser", async (req, res, next) => {
+	if (req.body.userId) {
+		try {
+			const rooms = await roomGetByUser(req.body.userId);
+			res.status(200).json({ rooms });
+		} catch (e) {
+			next(new MyHttpError(500, "Impossible de récupérer les rooms de l'utilisateur"));
+		}
+	} else {
+		next(new MyHttpError(400, "Requête mal formulée (ID utilisateur requis)"));
+	}
+});
+
+roomRouter.get("/get/:id", async (req, res, next) => {
+	if (req.params.id) {
+		try {
+			const room = await roomGetById(req.params.id);
+			res.status(200).json({ room });
+		} catch (e) {
+			next(new MyHttpError(500, "Impossible de récupérer la room"));
+		}
+	} else {
+		next(new MyHttpError(400, "Requête mal formulée (ID room requis)"));
+	}
+});
+
+roomRouter.post("/create", async (req, res, next) => {
+	if (req.body.userId && req.body.friendId && req.body.roomName) {
+		try {
+			await roomCreate(
+				req.body.userId,
+				req.body.friendId,
+				req.body.roomName
+			);
+			res.status(201).json({ message: "Room créée avec succès" });
+		} catch (e) {
+			next(new MyHttpError(500, "Impossible de créer la room"));
+		}
+	} else {
+		next(new MyHttpError(400, "Requête mal formulée (ID utilisateur, ID ami et nom de la room requis)"));
+	}
+});
+
+roomRouter.delete("/delete", async (req, res, next) => {
+	if (req.body.userId && req.body.friendId) {
+		try {
+			await roomDelete(req.body.userId, req.body.friendId);
+			res.status(200).json({ message: "Room supprimée avec succès" });
+		} catch (e) {
+			next(new MyHttpError(500, "Impossible de supprimer la room"));
+		}
+	} else {
+		next(new MyHttpError(400, "Requête mal formulée (ID utilisateur et ID ami requis)"));
+	}
+});
+
+roomRouter.delete("/delete/:id", async (req, res, next) => {
+	if (req.params.id) {
+		try {
+			await roomDeleteById(req.params.id);
+			res.status(200).json({ message: "Room supprimée avec succès" });
+		} catch (e) {
+			next(new MyHttpError(500, "Impossible de supprimer la room"));
+		}
+	} else {
+		next(new MyHttpError(400, "Requête mal formulée (ID room requis)"));
 	}
 });

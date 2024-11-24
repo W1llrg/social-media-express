@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+	<link rel="stylesheet" href="./css/index.css">
+</head>
+
+<body>
+<div class="container">
+	<div>
+		<h2>Chat</h2>
+		<div class="chatContent"></div>
+	</div>
+	<div>
+		<h2>Liste des rooms</h2>
+		<ul>
+			<li id="r1">Room1</li>
+			<li id="r2">Room2</li>
+			<li id="r3">Room3</li>
+			<li id="r4">Room4</li>
+		</ul>
+	</div>
+	<div class="sendInp">
+		<textarea name="" id="msgToSend"></textarea>
+	</div>
+	<div class="send">
+		<button>Envoyer !</button>
+	</div>
+</div>
+
+<script>
+	let socket = ""
+	const r1 = document.getElementById('r1')
+	const r2 = document.getElementById('r2')
+	const r3 = document.getElementById('r3')
+	const r4 = document.getElementById('r4')
+	const chatContent = document.querySelector('.chatContent')
+	const btn = document.querySelector('button')
+	const msgToSend = document.getElementById('msgToSend')
+
+	function addEvent() {
+		socket.on('message', (msg) => {
+			chatContent.innerHTML += `${msg} <br/>`
+		});
+
+	}
+	btn.addEventListener('click', () => {
+		console.log(msgToSend.value);
+
+		socket.emit('message', msgToSend.value)
+		msgToSend.value = ""
+	})
+
+	r1.addEventListener('click', () => {
+		if (socket != "") {
+			console.log("disco");
+			socket.disconnect()
+		}
+		socket = new io('ws://127.0.0.1:2999/default')
+		chatContent.innerHTML = ""
+		addEvent()
+
+	})
+	r2.addEventListener('click', () => {
+		if (socket != "") {
+			console.log("disco");
+			socket.disconnect()
+		}
+		socket = new io('ws://127.0.0.1:2999/room2')
+		chatContent.innerHTML = ""
+		addEvent()
+
+	})
+	r3.addEventListener('click', () => {
+		if (socket != "") {
+			console.log("disco");
+			socket.disconnect()
+		}
+		socket = new io('ws://127.0.0.1:2999/room3')
+		chatContent.innerHTML = ""
+		addEvent()
+
+	})
+	r4.addEventListener('click', () => {
+		if (socket != "") {
+			console.log("disco");
+
+			socket.disconnect()
+		}
+		socket = new io('ws://127.0.0.1:2999/room4')
+		chatContent.innerHTML = ""
+		addEvent()
+
+	})
+</script>
+</body>
+
+</html>

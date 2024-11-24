@@ -49,15 +49,17 @@ roomRouter.get("/get/:id", async (req, res, next) => {
 	}
 });
 
-roomRouter.post("/create", async (req, res, next) => {
+roomRouter.post("/findOrCreate", async (req, res, next) => {
 	if (req.body.userId && req.body.friendId && req.body.roomName) {
 		try {
-			await roomFindOrCreate(
+			const room = await roomFindOrCreate(
 				req.body.userId,
-				req.body.friendId,
-				req.body.roomName
+				req.body.friendId
 			);
-			res.status(201).json({ message: "Room créée avec succès" });
+			res.status(201).json({
+				message: "Room créée avec succès",
+				room: room
+			});
 		} catch (e) {
 			next(new MyHttpError(500, "Impossible de créer la room"));
 		}

@@ -48,10 +48,10 @@ export const userCreate = async (firstName, lastName, surname, email, passwd) =>
 	}
 }
 
-export const userGetAllFriends = async (username) =>
+export const userGetAllFriends = async (userId) =>
 {
 	const user = await Users.findOne({
-		where: {surname: username}
+		where: {user_id: userId}
 	});
 	if (!user) {
 		throw new MyError(US_CODE + 200, "Utilisateur introuvable");

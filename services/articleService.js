@@ -1,5 +1,6 @@
 import Articles from "../models/articles.js";
 import {MyError} from "../utils/errorBuilders.js";
+import {userGetAllFriends} from "./userService.js";
 
 const AS_CODE = 2000;
 
@@ -37,6 +38,28 @@ export const articleGetById = async (articleId) =>
 	}
 
 	return article;
+}
+
+export const articleGetAllByUserFriend = async (userId) =>
+{
+	let friends;
+	try {
+		friends = await userGetAllFriends(userId);
+	} catch (e) {
+		console.error(e);
+	}
+
+	try {
+		let articles = [];
+		for (let i = 0; i < friends.length; i++) {
+			const friendArticles = articleGetAllByUser(friends[i].user_id);
+			articles = articles.concat(articles);
+		}
+
+		return articles;
+	} catch (e) {
+		throw new MyError(AS_CODE + 500, "Impossible de récupérer tous les articles");
+	}
 }
 
 export const articleGetAll = async () =>

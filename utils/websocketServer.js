@@ -37,7 +37,7 @@ class WebsocketServer
 	{
 		socket.on("message", (message) =>
 		{
-			console.log(`Received ${message}`);
+			console.log(`Received ${message} in room ${room}`);
 
 			this.of(room).emit("message", message);
 		});

@@ -32,6 +32,8 @@ import {userRouter} from "./routes/userRouter.js";
 import {articleRouter} from "./routes/articleRouter.js";
 import {commentRouter} from "./routes/commentRouter.js";
 import {contentRouter} from "./routes/contentRouter.js";
+import {roomRouter} from "./routes/roomsRouter.js";
+import {chatRouter} from "./routes/chatRouter.js";
 import {websocketServer} from "./utils/websocketServer.js";
 import {rootQuery} from "./graphql/types/gqlArticlesComments.js";
 
@@ -39,6 +41,8 @@ app.use("/api/user", userRouter);
 app.use("/api/article", articleRouter);
 app.use("/api/comment", commentRouter);
 app.use("/api/content", contentRouter);
+app.use("/api/room", roomRouter);
+app.use("/api/chat", chatRouter);
 
 app.listen(port, () =>
 {
